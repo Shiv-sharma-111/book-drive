@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, ListView, CreateView
 from django.core.files.storage import FileSystemStorage
 from django.urls import reverse_lazy
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpResponseRedirect
 
 from .forms import BookForm
 from .models import Book
@@ -20,14 +23,13 @@ def upload(request):
         context['url'] = fs.url(name)
     return render(request, 'upload.html', context)
 
-
 def book_list(request):
     books = Book.objects.all()
     return render(request, 'book_list.html', {
         'books': books
     })
 
-
+@login_required(login_url="/login")
 def upload_book(request):
     if request.method == 'POST':
         form = BookForm(request.POST, request.FILES)
@@ -59,3 +61,25 @@ class UploadBookView(CreateView):
     form_class = BookForm
     success_url = reverse_lazy('class_book_list')
     template_name = 'upload_book.html'
+
+
+# Create your views here.
+def userLogin(request):
+    data = {}
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username,password=password)
+        if user:
+            login(request, user)
+            return HttpResponseRedirect('/books')
+        else:
+            data['error']="UserName and Password are incorrect"
+            res = render(request,'admin_login.html', data)
+            return res
+    else:
+        return render(request,'admin_login.html',data)
+
+def userLogout(request):
+    logout(request)
+    return HttpResponseRedirect('login')

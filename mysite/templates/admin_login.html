@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div id="login_body">
+        <form method="post">
+            {% csrf_token %}
+            <table>
+                <thead>
+                    <tr>
+                        <div id="user_form">
+                        <td>
+                            <label for=username>Username</label>
+                        </td>
+                        <td>
+                            <input type="text" name="username" id="username">
+                        </td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div id="pass_form">
+                        <td>
+                            <label for=password>Password</label>
+                        </td>
+                        <td><input type="password" name="password" id="password"></td>
+                        </div>
+                    </tr>
+                <div id="submit_form">
+                    <tr>
+                        <td></td>
+                        <td><input type="submit" value="Login"></td>
+                    </tr>
+                </div>
+                </thead>
+            </table>
+        </form>
+        <p>{{error}}</p>
+        </div>
+    </div>
+    <div id="footer_section">
+
+    </div>
+
+{% endblock %}
